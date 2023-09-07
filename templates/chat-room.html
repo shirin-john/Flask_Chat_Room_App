@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+
+{% block title%}Room #{{room_code}}{% endblock %}
+{% block content %}
+<div class="chat-room">
+    <div class="room-title">Room  #{{room_code}}</div>
+    <div class="messages" id="messages"></div> <!-- To inject messages from socket server -->
+    <div class="inputs">
+        <input type="text" class="textspace" rows="5" placeholder="Message" name="message" id="message"></textarea>
+        <button type="button" class="send-btn" name="send" id="send-btn" onClick="SendMessage()">Send</button>
+    </div>
+</div>
+
+<!-- Javascript function for messages -->
+<script type="text/javascript"> 
+    var Socketio=io(); // Initializing SocketIO
+
+    // Handling messages
+    // Javascript-SocketIO connection
+    const messages = document.getElementById("messages")
+    const newMessage = (name,msg) => {
+        const content = 
+        `<div class="text">
+            <div class="chat-msg">
+                <span style="color:#38424b"><strong style="color:#505e6c;">${name}</strong><br> ${msg}</span></div>
+        </div>
+        <div class="time">
+            <span class="muted" style="margin-left:20px">Recd: ${new Date().toLocaleString()}</span><br><br>
+        </div>`;
+        messages.innerHTML+=content;
+    }
+
+    //Sending messages to server. The server will then transmit the messages to other clients. 
+    Socketio.on("message", (data) => {
+        newMessage(data.name, data.message)})
+    const SendMessage = () => {
+        const message = document.getElementById("message");
+        if (message.value=="") return;
+        Socketio.emit("message", {data:message.value});
+        message.value = "";
+    } 
+</script>
+
+<!-- Retaining chat history -->
+{% for msg in messages %}
+<script type="text/javascript">
+    newMessage("{{msg.name}}","{{msg.message}}")
+</script>
+{% endfor %}
+{% endblock %}

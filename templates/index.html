@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %} TeamChats {% endblock %}
+
+{% block content %} <!-- For user credentials -->
+    <div class="form-container">
+        <div class="logo-holder"></div>
+            <form method="post" class="credentials">
+                <h2 class="text-center">Welcome!</h2>
+                <div>
+                    <input type="text" class="form-element" placeholder="Name" name="name" value="{{name}}"/><br>   
+                </div>
+                <div class="join">
+                    <input type="text" class="form-element" placeholder="Chat Room Code" name="code" value="{{code}}" />
+                    <button type="submit" name="join" class="join-btn">Join a Room</button>
+                </div>
+                <button type="submit" name="create" class="create-btn">Create a new Room</button>
+                {% if error %} <!-- For incomplete form data -->
+                <p align = "center" style="font-family: Arial, Helvetica, sans-serif;"> * {{error}} </p>
+                {% endif %}
+        </form></div>
+{% endblock %}
